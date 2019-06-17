@@ -1,0 +1,24 @@
+plugins {
+    id 'java'
+}
+
+group 'network.planar'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    maven {
+        url('https://maven.conveyal.com/')
+    }
+    maven {
+        url('http://download.osgeo.org/webdav/geotools/')
+    }
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'com.conveyal', name: 'gtfs-lib', version: '4.3.6'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
