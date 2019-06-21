@@ -38,8 +38,9 @@ public class RaptorAlgorithm {
     public RaptorScanResults scan(Map<String, Integer> origins, int date, int dow) {
         RouteScanner routeScanner = this.routeScannerFactory.create();
         Map<String, Integer> bestArrivals = new HashMap<>();
-        List<Map<String, Integer>> kArrivals = asList(new HashMap<>());
         Map<String, Map<Integer, Connection>> kConnections = new HashMap<>();
+        List<Map<String, Integer>> kArrivals = new ArrayList<>();
+        kArrivals.add(new HashMap<>());
 
         for (String stop : stops) {
             bestArrivals.put(stop, origins.getOrDefault(stop, Integer.MAX_VALUE));
@@ -51,7 +52,7 @@ public class RaptorAlgorithm {
 
         for (Set<String> markedStops = origins.keySet(); markedStops.size() > 0; k++) {
             Map<String, String> queue = this.queueFactory.getQueue(markedStops);
-            kArrivals.set(k, new HashMap<>());
+            kArrivals.add(new HashMap<>());
 
             // examine routes
             for (String routeId : queue.keySet()) {
@@ -72,8 +73,10 @@ public class RaptorAlgorithm {
                     }
                     else if (previousPiArrival != null && (stops == null || previousPiArrival < stops.get(pi).arrivalTime + changeTime)) {
                         trip = routeScanner.getTrip(routeId, date, dow, pi, previousPiArrival);
-                        stops = trip.stopTimes;
-                        boardingPoint = pi;
+                        if (trip != null) {
+                            stops = trip.stopTimes;
+                            boardingPoint = pi;
+                        }
                     }
                 }
             }

@@ -9,8 +9,13 @@ import network.planar.raptor.journey.Transfer;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import static com.google.common.primitives.Booleans.asList;
+import static network.planar.raptor.gtfs.DateUtil.toGtfsDate;
 import static org.mapdb.Fun.Tuple2;
 
 public class GtfsFeedAdapter {
@@ -56,13 +61,13 @@ public class GtfsFeedAdapter {
             Map<Integer, Boolean> dates = new HashMap<>();
 
             for (CalendarDate date : service.calendar_dates.values()) {
-                dates.put(Integer.parseInt(date.date.format(gtfsFormat)), date.exception_type == 1);
+                dates.put(toGtfsDate(date.date), date.exception_type == 1);
             }
 
             Calendar calendar = new Calendar(
-                Integer.parseInt(service.calendar.start_date.format(gtfsFormat)),
-                Integer.parseInt(service.calendar.end_date.format(gtfsFormat)),
-                Arrays.asList(
+                toGtfsDate(service.calendar.start_date),
+                toGtfsDate(service.calendar.end_date),
+                asList(
                     service.calendar.sunday == 1,
                     service.calendar.monday == 1,
                     service.calendar.tuesday == 1,

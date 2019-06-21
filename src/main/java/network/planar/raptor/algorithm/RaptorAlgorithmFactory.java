@@ -2,6 +2,7 @@ package network.planar.raptor.algorithm;
 
 import network.planar.raptor.gtfs.Trip;
 import network.planar.raptor.gtfs.feed.GtfsFeed;
+import network.planar.raptor.journey.Transfer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +21,7 @@ public class RaptorAlgorithmFactory {
     public RaptorAlgorithm create(GtfsFeed feed) {
         Map<String, Map<String, Integer>> routeStopIndex = new HashMap<>();
         Map<String, List<String>> routePath = new HashMap<>();
-        Map<String, Map<String, Integer>> usefulTransfers = new HashMap<>();
+        Map<String, List<Transfer>> usefulTransfers = new HashMap<>();
         Map<String, Integer> interchange = new HashMap<>();
         Map<String, List<String>> routesAtStop = new HashMap<>();
         Map<String, List<Trip>> tripsByRoute = new HashMap<>();
@@ -38,7 +39,7 @@ public class RaptorAlgorithmFactory {
 
                 for (int i = 0; i < path.size(); i++) {
                     routeStopIndex.get(routeId).put(path.get(i), i);
-                    usefulTransfers.put(path.get(i), feed.transfers.getOrDefault(path.get(i), new HashMap<>()));
+                    usefulTransfers.put(path.get(i), feed.transfers.getOrDefault(path.get(i), new ArrayList<>()));
                     interchange.put(path.get(i), feed.interchange.getOrDefault(path.get(i), DEFAULT_INTERCHANGE_TIME));
 
                     if (trip.stopTimes.get(i).pickUp) {
