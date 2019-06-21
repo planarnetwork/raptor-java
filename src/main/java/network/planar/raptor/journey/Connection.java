@@ -23,7 +23,7 @@ public class Connection {
     }
 
     public Leg getLeg() {
-        return this.transfer == null
+        return trip != null
             ? new Leg(trip.stopTimes.get(startIndex).stop, trip.stopTimes.get(endIndex).stop, trip, trip.stopTimes.subList(startIndex, endIndex))
             : new Leg(transfer.origin, transfer.destination, transfer.duration);
     }

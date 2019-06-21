@@ -8,7 +8,6 @@ import network.planar.raptor.gtfs.Trip;
 import network.planar.raptor.journey.Transfer;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,8 +18,6 @@ import static network.planar.raptor.gtfs.DateUtil.toGtfsDate;
 import static org.mapdb.Fun.Tuple2;
 
 public class GtfsFeedAdapter {
-
-    private DateTimeFormatter gtfsFormat = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     public GtfsFeed convert(GTFSFeed feed) {
         List<Trip> trips = getTrips(feed);
@@ -93,7 +90,10 @@ public class GtfsFeedAdapter {
             if (!transfer.from_stop_id.equals(transfer.to_stop_id)) {
                 transfers
                     .computeIfAbsent(transfer.from_stop_id, k -> new ArrayList<>())
-                    .add(new Transfer(transfer.from_stop_id, transfer.to_route_id, transfer.min_transfer_time));
+                    .add(new Transfer(transfer.from_stop_id, transfer.to_stop_id, transfer.min_transfer_time));
+//
+//                interchange.putIfAbsent(transfer.from_stop_id, 0);
+//                interchange.putIfAbsent(transfer.to_stop_id, 0);
             }
             else {
                 interchange.put(transfer.from_stop_id, transfer.min_transfer_time);

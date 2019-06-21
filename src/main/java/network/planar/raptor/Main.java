@@ -17,7 +17,7 @@ public class Main {
 
     public static void main(String[] argv) {
         GtfsFeedFactory factory = new GtfsFeedFactory(new GtfsFeedAdapter());
-        GtfsFeed feed = factory.create("/home/linus/Downloads/gb-rail-latest.zip");
+        GtfsFeed feed = factory.create("/home/linus/Downloads/gb-rail-latest1.zip");
         System.out.println("Trips: " + feed.trips.size());
 
         RaptorAlgorithmFactory raptorFactory = new RaptorAlgorithmFactory();
@@ -40,7 +40,7 @@ public class Main {
         }
 
         System.out.println("==============================");
-        System.out.println("Time: " + (end - start) / 1000);
+        System.out.println("Time: " + (end - start));
     }
 
     private static String toTime(int time) {

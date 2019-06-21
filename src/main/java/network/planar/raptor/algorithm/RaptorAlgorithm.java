@@ -50,7 +50,7 @@ public class RaptorAlgorithm {
 
         int k = 1;
 
-        for (Set<String> markedStops = origins.keySet(); markedStops.size() > 0; k++) {
+        for (Set<String> markedStops = origins.keySet(); !markedStops.isEmpty(); k++) {
             Map<String, String> queue = this.queueFactory.getQueue(markedStops);
             kArrivals.add(new HashMap<>());
 
@@ -73,10 +73,8 @@ public class RaptorAlgorithm {
                     }
                     else if (previousPiArrival != null && (stops == null || previousPiArrival < stops.get(pi).arrivalTime + changeTime)) {
                         trip = routeScanner.getTrip(routeId, date, dow, pi, previousPiArrival);
-                        if (trip != null) {
-                            stops = trip.stopTimes;
-                            boardingPoint = pi;
-                        }
+                        stops = trip != null ? trip.stopTimes : null;
+                        boardingPoint = pi;
                     }
                 }
             }

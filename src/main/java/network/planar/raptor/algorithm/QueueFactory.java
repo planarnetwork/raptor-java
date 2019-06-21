@@ -1,9 +1,6 @@
 package network.planar.raptor.algorithm;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class QueueFactory {
     private final Map<String, List<String>> routesAtStop;
@@ -18,7 +15,7 @@ public class QueueFactory {
         Map<String, String> queue = new HashMap<>();
 
         for (String stop : markedStops) {
-            for (String routeId : routesAtStop.get(stop)) {
+            for (String routeId : routesAtStop.getOrDefault(stop, new ArrayList<>())) {
                 if (queue.containsKey(routeId)) {
                     int newStopIndex = routeStopIndex.get(routeId).get(stop);
                     int currentStopIndex = routeStopIndex.get(routeId).get(queue.get(routeId));

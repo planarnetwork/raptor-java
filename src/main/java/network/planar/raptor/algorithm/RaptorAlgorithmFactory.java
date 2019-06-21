@@ -21,8 +21,6 @@ public class RaptorAlgorithmFactory {
     public RaptorAlgorithm create(GtfsFeed feed) {
         Map<String, Map<String, Integer>> routeStopIndex = new HashMap<>();
         Map<String, List<String>> routePath = new HashMap<>();
-        Map<String, List<Transfer>> usefulTransfers = new HashMap<>();
-        Map<String, Integer> interchange = new HashMap<>();
         Map<String, List<String>> routesAtStop = new HashMap<>();
         Map<String, List<Trip>> tripsByRoute = new HashMap<>();
 
@@ -39,8 +37,8 @@ public class RaptorAlgorithmFactory {
 
                 for (int i = 0; i < path.size(); i++) {
                     routeStopIndex.get(routeId).put(path.get(i), i);
-                    usefulTransfers.put(path.get(i), feed.transfers.getOrDefault(path.get(i), new ArrayList<>()));
-                    interchange.put(path.get(i), feed.interchange.getOrDefault(path.get(i), DEFAULT_INTERCHANGE_TIME));
+                    feed.transfers.putIfAbsent(path.get(i), new ArrayList<>());
+                    feed.interchange.putIfAbsent(path.get(i), DEFAULT_INTERCHANGE_TIME);
 
                     if (trip.stopTimes.get(i).pickUp) {
                         routesAtStop.computeIfAbsent(path.get(i), k -> new ArrayList<>()).add(routeId);
@@ -54,9 +52,9 @@ public class RaptorAlgorithmFactory {
         return new RaptorAlgorithm(
             routeStopIndex,
             routePath,
-            usefulTransfers,
-            interchange,
-            new ArrayList<>(usefulTransfers.keySet()),
+            feed.transfers,
+            feed.interchange,
+            new ArrayList<>(feed.interchange.keySet()),
             new QueueFactory(routesAtStop, routeStopIndex),
             new RouteScannerFactory(tripsByRoute, feed.services)
         );

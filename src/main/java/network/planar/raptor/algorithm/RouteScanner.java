@@ -55,10 +55,12 @@ public class RouteScanner {
     }
 
     private boolean serviceIsRunning(String serviceId, int date, int dow) {
-        return calendars.get(serviceId).dates.get(date) || (!calendars.get(serviceId).dates.containsKey(date) &&
-            calendars.get(serviceId).startDate <= date &&
-            calendars.get(serviceId).endDate >= date &&
-            calendars.get(serviceId).days.get(dow)
+        Calendar calendar = calendars.get(serviceId);
+
+        return calendar.dates.getOrDefault(date, false) || (!calendar.dates.containsKey(date) &&
+            calendar.startDate <= date &&
+            calendar.endDate >= date &&
+            calendar.days.get(dow)
         );
     }
 }
