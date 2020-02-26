@@ -10,6 +10,7 @@ import network.planar.raptor.query.DepartAfterQuery;
 import network.planar.raptor.results.JourneyFactory;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -17,30 +18,34 @@ public class Main {
 
     public static void main(String[] argv) {
         GtfsFeedFactory factory = new GtfsFeedFactory(new GtfsFeedAdapter());
-        GtfsFeed feed = factory.create("/home/linus/Downloads/gb-rail-latest1.zip");
+        GtfsFeed feed = factory.create("/home/linus/Downloads/gb-rail-latest.zip");
         System.out.println("Trips: " + feed.trips.size());
 
         RaptorAlgorithmFactory raptorFactory = new RaptorAlgorithmFactory();
         RaptorAlgorithm raptor = raptorFactory.create(feed);
         DepartAfterQuery query = new DepartAfterQuery(raptor, new JourneyFactory());
+        List<Journey> journeys = new ArrayList<>();
 
-        Long start = System.currentTimeMillis();
-        List<Journey> journeys = query.plan("PDW", "EDB", LocalDate.now(), 3600 * 10);
-        Long end = System.currentTimeMillis();
+        for (int i = 0; i < 10; i++) {
+            Long start = System.currentTimeMillis();
+            journeys = query.plan("PDW", "EDB", LocalDate.now(), 3600 * 10);
+            Long end = System.currentTimeMillis();
+            System.out.println("Time: " + (end - start));
+        }
 
         for (Journey journey : journeys) {
             String departure = toTime(journey.departureTime);
             String arrival = toTime(journey.arrivalTime);
             String legs = journey.legs
                 .stream()
-                .map(l -> l.destination)
-                .reduce(journey.legs.get(0).origin, (result, stop) -> result + "->" + stop);
+                .map(l -> l.isTransfer()
+                    ? "  " + l.origin + " -> " + l.destination + "(" + l.duration + ")"
+                    : "  " + l.origin + "(" + toTime(l.stopTimes.get(0).departureTime) + ") -> " + l.destination + "(" + toTime(l.stopTimes.get(l.stopTimes.size() - 1).arrivalTime) + ") " + l.trip.tripId
+                )
+                .reduce("", (result, leg) -> result + "\n" + leg);
 
             System.out.println(departure + ", " + arrival + ", " + legs);
         }
-
-        System.out.println("==============================");
-        System.out.println("Time: " + (end - start));
     }
 
     private static String toTime(int time) {

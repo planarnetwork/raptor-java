@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
 group 'network.planar'
@@ -18,7 +19,11 @@ repositories {
 }
 
 dependencies {
-    compile group: 'com.conveyal', name: 'gtfs-lib', version: '4.3.6'
+    compile group: 'com.conveyal', name: 'gtfs-lib', version: '5.1.0'
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
     testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+application {
+    mainClassName = "network.planar.raptor.Main"
 }

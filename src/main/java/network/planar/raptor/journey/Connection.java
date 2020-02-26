@@ -24,7 +24,7 @@ public class Connection {
 
     public Leg getLeg() {
         return trip != null
-            ? new Leg(trip.stopTimes.get(startIndex).stop, trip.stopTimes.get(endIndex).stop, trip, trip.stopTimes.subList(startIndex, endIndex))
+            ? new Leg(trip.stopTimes.get(startIndex).stop, trip.stopTimes.get(endIndex).stop, trip, trip.stopTimes.subList(startIndex, endIndex + 1))
             : new Leg(transfer.origin, transfer.destination, transfer.duration);
     }
 }
