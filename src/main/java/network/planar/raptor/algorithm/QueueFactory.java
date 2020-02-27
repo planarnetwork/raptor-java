@@ -12,10 +12,10 @@ public class QueueFactory {
     }
 
     public Map<String, String> getQueue(Set<String> markedStops) {
-        Map<String, String> queue = new HashMap<>();
+        Map<String, String> queue = new HashMap<>(255);
 
         for (String stop : markedStops) {
-            for (String routeId : routesAtStop.getOrDefault(stop, new ArrayList<>())) {
+            for (String routeId : routesAtStop.get(stop)) {
                 if (queue.containsKey(routeId)) {
                     int newStopIndex = routeStopIndex.get(routeId).get(stop);
                     int currentStopIndex = routeStopIndex.get(routeId).get(queue.get(routeId));

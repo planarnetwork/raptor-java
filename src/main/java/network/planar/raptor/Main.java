@@ -26,7 +26,7 @@ public class Main {
         DepartAfterQuery query = new DepartAfterQuery(raptor, new JourneyFactory());
         List<Journey> journeys = new ArrayList<>();
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 15; i++) {
             Long start = System.currentTimeMillis();
             journeys = query.plan("PDW", "EDB", LocalDate.now(), 3600 * 10);
             Long end = System.currentTimeMillis();

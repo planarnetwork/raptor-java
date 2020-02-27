@@ -39,9 +39,10 @@ public class RaptorAlgorithmFactory {
                     routeStopIndex.get(routeId).put(path.get(i), i);
                     feed.transfers.putIfAbsent(path.get(i), new ArrayList<>());
                     feed.interchange.putIfAbsent(path.get(i), DEFAULT_INTERCHANGE_TIME);
+                    routesAtStop.computeIfAbsent(path.get(i), k -> new ArrayList<>());
 
                     if (trip.stopTimes.get(i).pickUp) {
-                        routesAtStop.computeIfAbsent(path.get(i), k -> new ArrayList<>()).add(routeId);
+                        routesAtStop.get(path.get(i)).add(routeId);
                     }
                 }
             }

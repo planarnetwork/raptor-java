@@ -17,6 +17,6 @@ public class RouteScannerFactory {
     }
 
     public RouteScanner create() {
-        return new RouteScanner(tripsByRoute, calendars, new HashMap<>());
+        return new RouteScanner(tripsByRoute, calendars, new HashMap<>(1000));
     }
 }

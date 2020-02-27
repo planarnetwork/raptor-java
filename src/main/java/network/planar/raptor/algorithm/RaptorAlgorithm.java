@@ -37,22 +37,22 @@ public class RaptorAlgorithm {
 
     public RaptorScanResults scan(Map<String, Integer> origins, int date, int dow) {
         RouteScanner routeScanner = this.routeScannerFactory.create();
-        Map<String, Integer> bestArrivals = new HashMap<>();
-        Map<String, Map<Integer, Connection>> kConnections = new HashMap<>();
-        List<Map<String, Integer>> kArrivals = new ArrayList<>();
-        kArrivals.add(new HashMap<>());
+        Map<String, Integer> bestArrivals = new HashMap<>(3500);
+        Map<String, Map<Integer, Connection>> kConnections = new HashMap<>(3500);
+        List<Map<String, Integer>> kArrivals = new ArrayList<>(16);
+        kArrivals.add(new HashMap<>(3500));
 
         for (String stop : stops) {
             bestArrivals.put(stop, origins.getOrDefault(stop, Integer.MAX_VALUE));
             kArrivals.get(0).put(stop, origins.getOrDefault(stop, Integer.MAX_VALUE));
-            kConnections.put(stop, new HashMap<>());
+            kConnections.put(stop, new HashMap<>(3500));
         }
 
         int k = 1;
 
         for (Set<String> markedStops = origins.keySet(); !markedStops.isEmpty(); k++) {
             Map<String, String> queue = this.queueFactory.getQueue(markedStops);
-            kArrivals.add(new HashMap<>());
+            kArrivals.add(new HashMap<>(3500));
 
             // examine routes
             for (String routeId : queue.keySet()) {
