@@ -50,6 +50,13 @@ public class RaptorAlgorithmFactory {
             tripsByRoute.get(routeId).add(trip);
         }
 
+        for (List<Transfer> transfers : feed.transfers.values()) {
+            for (Transfer transfer : transfers) {
+                routesAtStop.computeIfAbsent(transfer.origin, k -> new ArrayList<>());
+                routesAtStop.computeIfAbsent(transfer.destination, k -> new ArrayList<>());
+            }
+        }
+
         return new RaptorAlgorithm(
             routeStopIndex,
             routePath,

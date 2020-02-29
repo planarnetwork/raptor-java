@@ -22,9 +22,10 @@ public class GtfsFeedAdapter {
     public GtfsFeed convert(GTFSFeed feed) {
         List<Trip> trips = getTrips(feed);
         Map<String, Calendar> services = getServices(feed);
-        ImmutablePair<Map<String, List<Transfer>>, Map<String, Integer>> transfers = getTransfers(feed);
+        Map<String, List<Transfer>> transfers = getLinks(feed);
+        Map<String, Integer> interchange = getInterchange(feed, transfers);
 
-        return new GtfsFeed(trips, services, transfers.left, transfers.right);
+        return new GtfsFeed(trips, services, transfers, interchange);
     }
 
     private List<Trip> getTrips(GTFSFeed feed) {
@@ -82,25 +83,31 @@ public class GtfsFeedAdapter {
         return services;
     }
 
-    private ImmutablePair<Map<String, List<Transfer>>, Map<String, Integer>> getTransfers(GTFSFeed feed) {
-        Map<String, List<Transfer>> transfers = new HashMap<>();
+    private Map<String, Integer> getInterchange(GTFSFeed feed, Map<String, List<Transfer>> transfers) {
         Map<String, Integer> interchange = new HashMap<>();
 
         for (com.conveyal.gtfs.model.Transfer transfer : feed.transfers.values()) {
-            if (!transfer.from_stop_id.equals(transfer.to_stop_id)) {
-                transfers
-                    .computeIfAbsent(transfer.from_stop_id, k -> new ArrayList<>())
-                    .add(new Transfer(transfer.from_stop_id, transfer.to_stop_id, transfer.min_transfer_time));
-//
-//                interchange.putIfAbsent(transfer.from_stop_id, 0);
-//                interchange.putIfAbsent(transfer.to_stop_id, 0);
+            if (transfer.from_stop_id.equals(transfer.to_stop_id)) {
+                interchange.put(transfer.from_stop_id, transfer.min_transfer_time);
             }
             else {
-                interchange.put(transfer.from_stop_id, transfer.min_transfer_time);
+                transfers.computeIfAbsent(transfer.from_stop_id, k -> new ArrayList<>())
+                    .add(new Transfer(transfer.from_stop_id, transfer.to_stop_id, transfer.min_transfer_time, 0, Integer.MAX_VALUE));
             }
         }
 
-        return new ImmutablePair<>(transfers, interchange);
+        return interchange;
+    }
+
+    private Map<String, List<Transfer>> getLinks(GTFSFeed feed) {
+        Map<String, List<Transfer>> links = new HashMap<>();
+
+        for (com.conveyal.gtfs.model.Link link : feed.links.values()) {
+            links.computeIfAbsent(link.from_stop_id, k -> new ArrayList<>())
+                .add(new Transfer(link.from_stop_id, link.to_stop_id, link.duration, link.start_time, link.end_time));
+        }
+
+        return links;
     }
 
 }

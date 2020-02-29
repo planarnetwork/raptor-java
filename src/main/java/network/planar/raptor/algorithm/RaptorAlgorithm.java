@@ -85,7 +85,7 @@ public class RaptorAlgorithm {
                     String stopPi = transfer.destination;
                     int arrival = kArrivals.get(k - 1).get(stopP) + transfer.duration + interchange.get(stopPi);
 
-                    if (arrival < bestArrivals.get(stopPi)) {
+                    if (transfer.startTime <= arrival && transfer.endTime >= arrival && arrival < bestArrivals.get(stopPi)) {
                         kArrivals.get(k).put(stopPi, arrival);
                         bestArrivals.put(stopPi, arrival);
                         kConnections.get(stopPi).put(k, new Connection(transfer));
