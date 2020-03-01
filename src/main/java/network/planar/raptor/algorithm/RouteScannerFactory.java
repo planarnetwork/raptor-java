@@ -16,7 +16,7 @@ public class RouteScannerFactory {
         this.calendars = calendars;
     }
 
-    public RouteScanner create() {
-        return new RouteScanner(tripsByRoute, calendars, new HashMap<>(1000));
+    public RouteScanner create(int date, int dow) {
+        return new RouteScanner(tripsByRoute, calendars, new HashMap<>(1000), date, dow);
     }
 }

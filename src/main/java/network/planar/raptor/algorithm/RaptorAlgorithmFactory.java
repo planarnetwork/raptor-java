@@ -62,7 +62,7 @@ public class RaptorAlgorithmFactory {
             routePath,
             feed.transfers,
             feed.interchange,
-            new ArrayList<>(feed.interchange.keySet()),
+            new ScanResultsFactory(new ArrayList<>(feed.interchange.keySet())),
             new QueueFactory(routesAtStop, routeStopIndex),
             new RouteScannerFactory(tripsByRoute, feed.services)
         );

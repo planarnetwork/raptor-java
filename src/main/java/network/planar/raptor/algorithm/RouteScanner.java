@@ -11,18 +11,24 @@ public class RouteScanner {
     private final Map<String, List<Trip>> tripsByRoute;
     private final Map<String, Calendar> calendars;
     private final Map<String, Integer> routeScanPosition;
+    private final int date;
+    private final int dow;
 
     public RouteScanner(
         Map<String, List<Trip>> tripsByRoute,
         Map<String, Calendar> calendars,
-        Map<String, Integer> routeScanPosition
+        Map<String, Integer> routeScanPosition,
+        int date,
+        int dow
     ) {
         this.tripsByRoute = tripsByRoute;
         this.calendars = calendars;
         this.routeScanPosition = routeScanPosition;
+        this.date = date;
+        this.dow = dow;
     }
 
-    public Trip getTrip(String routeId, int date, int dow, int stopIndex, int time) {
+    public Trip getTrip(String routeId, int stopIndex, int time) {
         if (!this.routeScanPosition.containsKey(routeId)) {
             this.routeScanPosition.put(routeId, tripsByRoute.get(routeId).size() - 1);
         }
@@ -38,7 +44,7 @@ public class RouteScanner {
                 break;
             }
             // if it is reachable and the service is running that day, update the last valid trip found
-            else if (serviceIsRunning(trip.serviceId, date, dow)) {
+            else if (serviceIsRunning(trip.serviceId)) {
                 lastFound = trip;
             }
 
@@ -54,13 +60,13 @@ public class RouteScanner {
         return lastFound;
     }
 
-    private boolean serviceIsRunning(String serviceId, int date, int dow) {
+    private boolean serviceIsRunning(String serviceId) {
         Calendar calendar = calendars.get(serviceId);
 
         return calendar.dates.getOrDefault(date, false) || (!calendar.dates.containsKey(date) &&
             calendar.startDate <= date &&
             calendar.endDate >= date &&
-            calendar.days.get(dow)
+            calendar.days.get(dow - 1)
         );
     }
 }

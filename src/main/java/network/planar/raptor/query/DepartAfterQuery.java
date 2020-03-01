@@ -1,11 +1,12 @@
 package network.planar.raptor.query;
 
 import network.planar.raptor.algorithm.RaptorAlgorithm;
-import network.planar.raptor.algorithm.RaptorScanResults;
+import network.planar.raptor.algorithm.ScanResults;
 import network.planar.raptor.journey.Journey;
 import network.planar.raptor.results.ResultsFactory;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,14 +23,23 @@ public class DepartAfterQuery {
         this.resultsFactory = resultsFactory;
     }
 
-    public List<Journey> plan(String origin, String destination, LocalDate date, int time) {
-        Map<String, Integer> originTimes = new HashMap<>();
-        originTimes.put(origin, time);
-
+    public List<Journey> plan(List<String> origins, List<String> destinations, LocalDate date, int time) {
         int dateInt = toGtfsDate(date);
         int dayOfWeek = date.getDayOfWeek().getValue();
-        RaptorScanResults results = raptor.scan(originTimes, dateInt, dayOfWeek);
+        Map<String, Integer> originTimes = new HashMap<>(origins.size());
 
-        return this.resultsFactory.getResults(results.kConnections, destination);
+        for (String origin : origins) {
+            originTimes.put(origin, time);
+        }
+
+        ScanResults.FinalizedResults results = raptor.scan(originTimes, dateInt, dayOfWeek);
+
+        List<Journey> journeys = new ArrayList<>(100);
+
+        for (String destination : destinations) {
+            journeys.addAll(resultsFactory.getResults(results.kConnections, destination));
+        }
+
+        return journeys;
     }
 }

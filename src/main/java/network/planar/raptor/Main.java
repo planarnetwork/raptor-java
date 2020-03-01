@@ -13,6 +13,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
+
 
 public class Main {
 
@@ -25,10 +27,12 @@ public class Main {
         RaptorAlgorithm raptor = raptorFactory.create(feed);
         DepartAfterQuery query = new DepartAfterQuery(raptor, new JourneyFactory());
         List<Journey> journeys = new ArrayList<>();
+        List<String> origins = singletonList("PDW");
+        List<String> destinations = singletonList("EDB");
 
         for (int i = 0; i < 15; i++) {
             Long start = System.currentTimeMillis();
-            journeys = query.plan("PDW", "EDB", LocalDate.now(), 3600 * 10);
+            journeys = query.plan(origins, destinations, LocalDate.now(), 3600 * 10);
             Long end = System.currentTimeMillis();
             System.out.println("Time: " + (end - start));
         }

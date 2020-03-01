@@ -66,13 +66,13 @@ public class GtfsFeedAdapter {
                 toGtfsDate(service.calendar.start_date),
                 toGtfsDate(service.calendar.end_date),
                 asList(
-                    service.calendar.sunday == 1,
                     service.calendar.monday == 1,
                     service.calendar.tuesday == 1,
                     service.calendar.wednesday == 1,
                     service.calendar.thursday == 1,
                     service.calendar.friday == 1,
-                    service.calendar.saturday == 1
+                    service.calendar.saturday == 1,
+                    service.calendar.sunday == 1
                 ),
                 dates
             );
