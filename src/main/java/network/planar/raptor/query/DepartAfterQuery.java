@@ -3,6 +3,7 @@ package network.planar.raptor.query;
 import network.planar.raptor.algorithm.RaptorAlgorithm;
 import network.planar.raptor.algorithm.ScanResults;
 import network.planar.raptor.journey.Journey;
+import network.planar.raptor.results.JourneyFilter;
 import network.planar.raptor.results.ResultsFactory;
 
 import java.time.LocalDate;
@@ -17,10 +18,12 @@ public class DepartAfterQuery {
 
     private final RaptorAlgorithm raptor;
     private final ResultsFactory resultsFactory;
+    private final JourneyFilter journeyFilter;
 
-    public DepartAfterQuery(RaptorAlgorithm raptor, ResultsFactory resultsFactory) {
+    public DepartAfterQuery(RaptorAlgorithm raptor, ResultsFactory resultsFactory, JourneyFilter journeyFilter) {
         this.raptor = raptor;
         this.resultsFactory = resultsFactory;
+        this.journeyFilter = journeyFilter;
     }
 
     public List<Journey> plan(List<String> origins, List<String> destinations, LocalDate date, int time) {
@@ -40,6 +43,6 @@ public class DepartAfterQuery {
             journeys.addAll(resultsFactory.getResults(results.kConnections, destination));
         }
 
-        return journeys;
+        return journeyFilter.apply(journeys);
     }
 }

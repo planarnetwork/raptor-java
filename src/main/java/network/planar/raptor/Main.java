@@ -8,11 +8,13 @@ import network.planar.raptor.gtfs.feed.GtfsFeedFactory;
 import network.planar.raptor.journey.Journey;
 import network.planar.raptor.query.DepartAfterQuery;
 import network.planar.raptor.results.JourneyFactory;
+import network.planar.raptor.results.JourneyFilter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
 
@@ -25,10 +27,10 @@ public class Main {
 
         RaptorAlgorithmFactory raptorFactory = new RaptorAlgorithmFactory();
         RaptorAlgorithm raptor = raptorFactory.create(feed);
-        DepartAfterQuery query = new DepartAfterQuery(raptor, new JourneyFactory());
+        DepartAfterQuery query = new DepartAfterQuery(raptor, new JourneyFactory(), new JourneyFilter());
         List<Journey> journeys = new ArrayList<>();
-        List<String> origins = singletonList("PDW");
-        List<String> destinations = singletonList("EDB");
+        List<String> origins = asList("BHM", "BSW", "BMO");
+        List<String> destinations = asList("LBG", "WAE", "CST", "LST", "CHX", "EUS", "VIC", "MYB");
 
         for (int i = 0; i < 15; i++) {
             Long start = System.currentTimeMillis();
