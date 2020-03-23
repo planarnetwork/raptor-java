@@ -6,8 +6,12 @@ import network.planar.raptor.gtfs.Calendar;
 import network.planar.raptor.gtfs.StopTime;
 import network.planar.raptor.gtfs.Trip;
 import network.planar.raptor.journey.Transfer;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.google.common.primitives.Booleans.asList;
 import static network.planar.raptor.gtfs.DateUtil.toGtfsDate;
@@ -16,16 +20,15 @@ import static org.mapdb.Fun.Tuple2;
 public class GtfsFeedAdapter {
 
     public GtfsFeed convert(GTFSFeed feed) {
-        Map<String, Set<Integer>> stopDepartureTimes = new HashMap<>(3500);
-        List<Trip> trips = getTrips(feed, stopDepartureTimes);
+        List<Trip> trips = getTrips(feed);
         Map<String, Calendar> services = getServices(feed);
         Map<String, List<Transfer>> transfers = getLinks(feed);
         Map<String, Integer> interchange = getInterchange(feed, transfers);
 
-        return new GtfsFeed(trips, services, transfers, interchange, stopDepartureTimes);
+        return new GtfsFeed(trips, services, transfers, interchange);
     }
 
-    private List<Trip> getTrips(GTFSFeed feed, Map<String, Set<Integer>> stopDepartureTimes) {
+    private List<Trip> getTrips(GTFSFeed feed) {
         HashMap<String, Trip> trips = new HashMap<>();
 
         for (Tuple2<String, Integer> key : feed.stop_times.keySet()) {
@@ -34,11 +37,6 @@ public class GtfsFeedAdapter {
             Trip trip = trips.computeIfAbsent(key.a, k -> new Trip(key.a, serviceId, new ArrayList<>()));
 
             trip.stopTimes.add(stopTime);
-
-            if (stopTime.pickUp) {
-                stopDepartureTimes.putIfAbsent(stopTime.stop, new HashSet<>());
-                stopDepartureTimes.get(stopTime.stop).add(stopTime.departureTime);
-            }
         }
 
         return new ArrayList<>(trips.values());
