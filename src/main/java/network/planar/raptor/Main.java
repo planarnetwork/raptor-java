@@ -13,6 +13,7 @@ import network.planar.raptor.results.JourneyFilter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -27,17 +28,18 @@ public class Main {
 
         RaptorAlgorithmFactory raptorFactory = new RaptorAlgorithmFactory();
         RaptorAlgorithm raptor = raptorFactory.create(feed);
-        DepartAfterQuery query = new DepartAfterQuery(raptor, new JourneyFactory(), new JourneyFilter());
-        List<Journey> journeys = new ArrayList<>();
+        DepartAfterQuery query = new DepartAfterQuery(raptor, new JourneyFactory(), new JourneyFilter(), feed.stopDepartureTimes);
         List<String> origins = asList("BHM", "BSW", "BMO");
         List<String> destinations = asList("LBG", "WAE", "CST", "LST", "CHX", "EUS", "VIC", "MYB");
 
         for (int i = 0; i < 15; i++) {
             Long start = System.currentTimeMillis();
-            journeys = query.plan(origins, destinations, LocalDate.now(), 3600 * 10);
+            query.plan(origins, destinations, LocalDate.now(), 3600 * 10, 5);
             Long end = System.currentTimeMillis();
             System.out.println("Time: " + (end - start));
         }
+
+        List<Journey> journeys = query.plan(origins, destinations, LocalDate.now(), 3600 * 10, 5);
 
         for (Journey journey : journeys) {
             String departure = toTime(journey.departureTime);
