@@ -9,12 +9,7 @@ version '1.0-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
-    maven {
-        url('https://maven.conveyal.com/')
-    }
-    maven {
-        url('https://download.osgeo.org/webdav/geotools/')
-    }
+    maven { url 'https://jitpack.io' }
     mavenCentral()
 }
 
@@ -25,8 +20,8 @@ repositories {
 }
 
 dependencies {
-    implementation name: 'gtfs-lib-5.1.1-SNAPSHOT-shaded'
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+    implementation group: 'com.github.linusnorton', name: 'gtfs-lib', version: '7.0.3'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
 
