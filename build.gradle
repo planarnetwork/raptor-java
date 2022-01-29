@@ -13,7 +13,7 @@ repositories {
         url('https://maven.conveyal.com/')
     }
     maven {
-        url('http://download.osgeo.org/webdav/geotools/')
+        url('https://download.osgeo.org/webdav/geotools/')
     }
     mavenCentral()
 }

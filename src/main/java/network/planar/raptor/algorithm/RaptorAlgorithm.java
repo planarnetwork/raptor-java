@@ -68,9 +68,13 @@ public class RaptorAlgorithm {
                     results.setTrip(trip, boardingPoint, pi, changeTime);
                 }
                 else if (previousPiArrival != null && (stops == null || previousPiArrival < stops.get(pi).arrivalTime + changeTime)) {
-                    trip = routeScanner.getTrip(routeId, pi, previousPiArrival);
-                    stops = trip != null ? trip.stopTimes : null;
-                    boardingPoint = pi;
+                    Trip newTrip = routeScanner.getTrip(routeId, pi, previousPiArrival);
+
+                    if (newTrip != null) {
+                        trip = newTrip;
+                        stops = newTrip.stopTimes;
+                        boardingPoint = pi;
+                    }
                 }
             }
         }
